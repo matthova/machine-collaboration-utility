@@ -8,6 +8,7 @@ const bsync = require('asyncawait/async');
 const bwait = require('asyncawait/await');
 
 const SerialCommandExecutor = require('./comProtocols/serial/executor');
+const SailfishCommandExecutor = require('./comProtocols/sailfish/executor');
 const HardwareHubExecutor = require('./comProtocols/hardwarehub/executor');
 const TelnetExecutor = require('./comProtocols/telnet/executor');
 const VirtualExecutor = require('./comProtocols/virtual/executor');
@@ -298,6 +299,15 @@ Bot.prototype.detect = function detect() {
           this.port,
           this.info.baudrate,
           openPrime
+        );
+        validator = this.validateSerialReply;
+        break;
+      }
+      case 'sailfish': {
+        executor = new SailfishCommandExecutor(
+          this.app,
+          this.port,
+          this.info.baudrate
         );
         validator = this.validateSerialReply;
         break;
