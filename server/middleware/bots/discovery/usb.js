@@ -90,6 +90,7 @@ UsbDiscovery.prototype.initialize = bsync(function initialize() {
 
   // Scan through all known serial ports and check if any of them are bots
   SerialPort.list((err, ports) => {
+    console.log('all the ports', ports);
     for (const port of ports) {
       if (port.vendorId !== undefined && port.productId !== undefined) {
         // Add each known serial port to the list
@@ -108,8 +109,20 @@ UsbDiscovery.prototype.detectPort = bsync(function detectPort(port) {
   const pid = parseInt(port.productId, 16);
 
   for (const [botPresetKey, botPresets] of _.pairs(this.app.context.bots.botSettingList)) {
-    if (botPresets.info.connectionType === 'serial') {
-      if (vid === botPresets.info.vid && pid === botPresets.info.pid) {
+    if (botPresets.info.connectionType === 'serial' || botPresets.info.connectionType === 'sailfish') {
+      if (
+        botPresets.info.vid
+        &&
+        botPresets.info.pid
+        &&
+        botPresets.info.vid.find(vidItem => {
+          return vidItem === vid || vidItem === -1;
+        })
+        &&
+        botPresets.info.pid.find(pidItem => {
+          return pidItem === pid || pidItem === -1;
+        })
+      ) {
         // Pass the detected preset to populate new settings
         const persistentCheck = bwait(this.checkForPersistentSettings(port, botPresets));
         let botObject;

@@ -32,8 +32,8 @@ const SmoothieBoard = function SmoothieBoard(app) {
   });
 
   _.extend(this.info, {
-    vid: 7504,
-    pid: 24597,
+    vid: [7504],
+    pid: [24597],
     baudrate: 230400,
   });
 
